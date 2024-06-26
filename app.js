@@ -6,6 +6,7 @@ const session = require("express-session");
 const SQLiteStore = require("connect-sqlite3")(session);
 const bcrypt = require("bcrypt");
 const users = require("./db/users.json");
+const flash = require('express-flash');
 
 
 const app = express();
@@ -158,7 +159,9 @@ app.get("/auth/admin/users/:targetUserId", ensureAdmin, (req, res) => {
   const { targetUserId } = req.params;
   const targetUser = users.find((user) => user.id === targetUserId);
   if (targetUser) {
-    return res.render("admin/user", { user: req.user, targetUser });
+    const successMessage = req.session.success;
+    delete req.session.success
+    return res.render("admin/user", { user: req.user, targetUser,successMessage });
   }
   return res.render("error", {
     message: "user not found",
@@ -194,7 +197,8 @@ app.post("/admin/users/:targetUserId/edit", ensureAdmin, (req, res) => {
   if (targetUser) {
     targetUser.email = email;
     targetUser.role = role;
-    req.flash('fait avec succes')
+    req.flash('success', 'Utilisateur modifié avec succès.');
+    // req.session.success = 'Utilisateur modifié avec succès.';//ajout de la propriete success
     return res.redirect(`/auth/admin/users/${targetUser.id}`);
 
   }

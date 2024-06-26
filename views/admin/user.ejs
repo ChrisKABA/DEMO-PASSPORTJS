@@ -1,6 +1,22 @@
 <%- include('../partials/header', {title: `Modifier ${targetUser.email}`}) -%>
     <br/>
     <br/>
+    <!-- <% if (successMessage) { %>
+        <script>
+          window.onload = function() {
+            alert('<%= successMessage %>');
+          };
+        </script>
+      <% } %> -->
+      <% if (messages.success) { %>
+        <script>
+            window.onload = function() {
+              alert('<%= messages.success %>');
+            };
+          </script>
+        <!-- <div class="alert alert-success"><%= messages.success %></div> -->
+      <% } %>
+
     
     <form method="POST" action="/admin/users/<%=targetUser.id%>/delete">
         <label for="delete" style="color: red;">Supprimer</label>
