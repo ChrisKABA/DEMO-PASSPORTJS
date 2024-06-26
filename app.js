@@ -108,7 +108,7 @@ passport.deserializeUser(function (user, cb) {
   });
 });
 
-app.get("/", (req, res) => {
+app.get("/",ensureAuthenticated, (req, res) => {
   res.render("index", { title: "Home Page", user: req.user });
 });
 
