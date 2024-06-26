@@ -7,6 +7,7 @@ const SQLiteStore = require("connect-sqlite3")(session);
 const bcrypt = require("bcrypt");
 const users = require("./db/users.json");
 
+
 const app = express();
 const saltRounds = 10;
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.set("views", __dirname + "/views");
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: false }));
+app.use(flash());
 
 app.use(
   session({
@@ -173,6 +175,12 @@ app.post("/admin/users/:targetUserId/delete", ensureAdmin, (req, res) => {
       error: { status: 404 },
     });
   }
+  if (users[targetUserIndex].role === 'admin') {
+    return res.render("error", {
+        message: "You're not authorized",
+        error: { status: 403 },
+      });
+  }
 
   users.splice(targetUserIndex, 1);
   return res.redirect("/auth/admin/users");
@@ -186,8 +194,9 @@ app.post("/admin/users/:targetUserId/edit", ensureAdmin, (req, res) => {
   if (targetUser) {
     targetUser.email = email;
     targetUser.role = role;
-
+    req.flash('fait avec succes')
     return res.redirect(`/auth/admin/users/${targetUser.id}`);
+
   }
   return res.render("error", {
     message: "user not found",
