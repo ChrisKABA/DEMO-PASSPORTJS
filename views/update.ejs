@@ -1,0 +1,31 @@
+<%- include('../partials/header', {title: `Modifier ${targetUser.email}`}) -%>
+    <br/>
+    <br/>
+      <% if (messages.success) { %>
+        <script>
+            window.onload = function() {
+              alert('<%= messages.success %>');
+            };
+          </script>
+      <% } %>
+
+    
+    <br/>
+    <br/>
+    <form method="POST" action="/<%=targetUser.id%>/update">
+        <div>
+            <div>
+                <label for="email">Email</label>
+            </div>
+            <div>
+                <input type="email" name="email" id="email" value="<%=targetUser.email%>">
+            </div>
+        </div>
+        <div>
+            <div>
+                <button type="submit">Modifier</button>
+            </div>
+        </div>
+        
+    </form>
+<%- include('../partials/footer') -%>

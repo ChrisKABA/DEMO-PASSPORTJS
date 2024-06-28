@@ -178,9 +178,9 @@ app.post("/admin/users/:targetUserId/delete", ensureAdmin, (req, res) => {
       error: { status: 404 },
     });
   }
-  if (users[targetUserIndex].role === 'admin') {
+  if (req.user.id === users[targetUserIndex].id && users[targetUserIndex].role === 'admin') {
     return res.render("error", {
-        message: "You're not authorized",
+        message: "you can't delete yourself",
         error: { status: 403 },
       });
   }
@@ -195,6 +195,12 @@ app.post("/admin/users/:targetUserId/edit", ensureAdmin, (req, res) => {
   const targetUser = users.find((user) => user.id === targetUserId);
 
   if (targetUser) {
+    if (req.user.id === targetUserId && targetUser.role === 'admin') {
+      return res.render("error", {
+          message: "you can't update yourself",
+          error: { status: 403 },
+        });
+    }
     targetUser.email = email;
     targetUser.role = role;
     req.flash('success', 'Utilisateur modifié avec succès.');
